@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Kids Mailer</title>
+<link href="files/css/style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="index">
+
+<div id="all">
+
+	<header id="header">
+    	<p>UTF-8リスト（タブ区切りテキスト）をドロップしてください。</p>
+    	<p>ファイル名：<span id="filename"></span></p>
+    </header>
+
+	<form id="form">
+        <p><input type="email" placeholder="テストメール" value="sakata@graphic.co.jp" id="test-mailaddress"></p>
+        <p><button type="button" class="sendMail">メール送信</button></p>
+    </form>
+    
+    <section id="error"></section>
+
+</div>
+
+
+<script src="files/js/jquery.js"></script>
+<script src="files/js/script.js"></script>
+
+</body>
+</html>
