@@ -17,8 +17,11 @@
     </header>
 
 	<form id="form">
-        <p><input type="email" placeholder="テストメール" value="sakata@graphic.co.jp" id="test-mailaddress"></p>
-        <p><button type="button" class="sendMail">メール送信</button></p>
+        <p>
+        	<label for="testmail">テストメール送信先：</label>
+            <input type="email" placeholder="テストメール送信先" value="sakata@graphic.co.jp" id="testmail">
+        </p>
+        <p><button type="button" id="sendMail">メール送信</button></p>
     </form>
     
     <section id="error"></section>

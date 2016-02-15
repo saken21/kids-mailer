@@ -10,7 +10,7 @@ class View {
 	
 	private static var _jFilename  :JQuery;
 	private static var _jForm      :JQuery;
-	private static var _jButtons   :JQuery;
+	private static var _jTestmail  :JQuery;
 	private static var _dragAndDrop:DragAndDrop;
 	
 	/* =======================================================================
@@ -22,8 +22,9 @@ class View {
 		
 		_jFilename = jAll.find('#filename');
 		_jForm     = jAll.find('#form');
+		_jTestmail = _jForm.find('#testmail');
 		
-		_jForm.find('.sendMail').on('click',sendMail);
+		_jForm.find('#sendMail').on('click',sendMail);
 		
 		_dragAndDrop = new DragAndDrop(Dom.jWindow,onDropped);
 		
@@ -46,9 +47,6 @@ class View {
 	========================================================================== */
 	private static function sendMail(event:JqEvent):Void {
 		
-		Mailer.send();
-		return;
-		
 		if (Data.getFormated().length == 0) {
 			
 			Handy.alert('リストに誤りがあります。メール送信できません。');
@@ -56,7 +54,7 @@ class View {
 			
 		}
 		
-		var testmail:String = _jForm.find('#test-mailaddress').prop('value');
+		var testmail:String = _jTestmail.prop('value');
 		
 		if (Dom.window.confirm('メールを送信します。\nよろしいですか？')) {
 			
@@ -67,7 +65,7 @@ class View {
 			} else {
 				
 				if (Dom.window.confirm('本番配信を行います。')) {
-					execute(testmail);
+					execute();
 				}
 				
 			}
@@ -79,7 +77,7 @@ class View {
 	/* =======================================================================
 	Execute
 	========================================================================== */
-	private static function execute(testmail:String):Void {
+	private static function execute(testmail:String = null):Void {
 		
 		Mailer.send(testmail);
 		

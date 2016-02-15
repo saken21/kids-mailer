@@ -134,27 +134,6 @@ components.Mailer.send = function(testmail) {
 	var counter = 0;
 	var formatedData = utils.Data.getFormated();
 	var isTest = testmail.length > 0;
-	var _g2 = 0;
-	var _g1 = formatedData.length;
-	while(_g2 < _g1) {
-		var i = _g2++;
-		counter++;
-		var replaced = components.Mailer.getReplaced(formatedData[i],counter);
-		if(isTest) {
-			if(counter % 100 == 0) {
-				replaced.set("mail",testmail);
-				testmail;
-				components.Mailer.request(replaced);
-			}
-		} else {
-			components.Mailer.request(replaced);
-			if(counter % 333 == 0) {
-				replaced.set("mail","sakata@graphic.co.jp");
-				"sakata@graphic.co.jp";
-				components.Mailer.request(replaced);
-			}
-		}
-	}
 };
 components.Mailer.getReplaced = function(info,num) {
 	return new haxe.ds.StringMap();
@@ -173,7 +152,8 @@ components.View.init = function() {
 	var jAll = new js.JQuery("#all").show();
 	components.View._jFilename = jAll.find("#filename");
 	components.View._jForm = jAll.find("#form");
-	components.View._jForm.find(".sendMail").on("click",components.View.sendMail);
+	components.View._jTestmail = components.View._jForm.find("#testmail");
+	components.View._jForm.find("#sendMail").on("click",components.View.sendMail);
 	components.View._dragAndDrop = new jp.saken.ui.DragAndDrop(jp.saken.utils.Dom.jWindow,components.View.onDropped);
 };
 components.View.onDropped = function(data) {
@@ -182,15 +162,13 @@ components.View.onDropped = function(data) {
 	utils.Data.init(data.split("\n"));
 };
 components.View.sendMail = function(event) {
-	components.Mailer.send();
-	return;
 	if(utils.Data.getFormated().length == 0) {
 		jp.saken.utils.Handy.alert("リストに誤りがあります。メール送信できません。");
 		return;
 	}
-	var testmail = components.View._jForm.find("#test-mailaddress").prop("value");
+	var testmail = components.View._jTestmail.prop("value");
 	if(jp.saken.utils.Dom.window.confirm("メールを送信します。\nよろしいですか？")) {
-		if(testmail.length > 0) components.View.execute(testmail); else if(jp.saken.utils.Dom.window.confirm("本番配信を行います。")) components.View.execute(testmail);
+		if(testmail.length > 0) components.View.execute(testmail); else if(jp.saken.utils.Dom.window.confirm("本番配信を行います。")) components.View.execute();
 	}
 };
 components.View.execute = function(testmail) {
@@ -563,7 +541,18 @@ js.Browser.createXMLHttpRequest = function() {
 var utils = {};
 utils.Data = function() { };
 utils.Data.init = function(array) {
-	console.log(array);
+	utils.Data._formated = [];
+	array.shift();
+	var _g1 = 0;
+	var _g = array.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		var splits = array[i].split("\t");
+		var _g2 = new haxe.ds.StringMap();
+		_g2.set("name",splits[1]);
+		_g2.set("mailaddress",splits[2]);
+		utils.Data._formated[i] = _g2;
+	}
 };
 utils.Data.getFormated = function() {
 	return utils.Data._formated;

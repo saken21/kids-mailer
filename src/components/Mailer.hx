@@ -17,9 +17,10 @@ class Mailer {
 		
 		var counter:Int = 0;
 		
-		var formatedData:Array<Array<String>> = Data.getFormated();
+		var formatedData:Formated = Data.getFormated();
 		var isTest:Bool = testmail.length > 0;
-
+		
+		/*
 		for (i in 0...formatedData.length) {
 			
 			counter++;
@@ -49,6 +50,7 @@ class Mailer {
 			}
 			
 		}
+		*/
 
 	}
 	
