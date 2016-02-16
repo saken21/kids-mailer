@@ -12,6 +12,7 @@
 <div id="all">
 
 	<header id="header">
+    	<h1>キッズGWオープン メール一括送信システム</h1>
     	<p>UTF-8リスト（タブ区切りテキスト）をドロップしてください。</p>
     	<p>ファイル名：<span id="filename"></span></p>
     </header>
@@ -20,11 +21,17 @@
         <p>
         	<label for="testmail">テストメール送信先：</label>
             <input type="email" placeholder="テストメール送信先" value="sakata@graphic.co.jp" id="testmail">
+            <span>※上記メールアドレスにテスト送信します（1/100件）。</span>
         </p>
         <p><button type="button" id="sendMail">メール送信</button></p>
     </form>
     
-    <section id="error"></section>
+    <section id="note">
+    	<section class="num"></section>
+    	<section class="error">
+        	<h2>エラー</h2>
+        </section>
+    </section>
 
 </div>
 

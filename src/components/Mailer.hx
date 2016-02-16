@@ -12,74 +12,63 @@ class Mailer {
 	========================================================================== */
 	public static function send(testmail:String = null):Void {
 		
-		request(['to'=>'sakata@graphic.co.jp','body'=>Message.getBody()]);
-		return;
+		var formated:Formated = Data.getFormated();
 		
-		var counter:Int = 0;
+		var body   :String = '\n' + Message.getBody();
+		var counter:Int    = 0;
+		var isTest :Bool   = testmail.length > 0;
 		
-		var formatedData:Formated = Data.getFormated();
-		var isTest:Bool = testmail.length > 0;
-		
-		/*
-		for (i in 0...formatedData.length) {
+		for (i in 0...formated.length) {
 			
 			counter++;
 			
-			var replaced:Map<String,String> = getReplaced(formatedData[i],counter);
+			var map:Map<String,String> = formated[i];
+			var addedBody:String = map['name'] + body;
 			
 			if (isTest) {
 				
 				if (counter % 100 == 0) {
-					
-					replaced['mail'] = testmail;
-					request(replaced);
-					
+					request(testmail,addedBody);
 				}
 				
 			} else {
 				
-				request(replaced);
+				request(map['mailaddress'],addedBody);
 
 				if (counter % 333 == 0) {
-					
-					replaced['mail'] = 'sakata@graphic.co.jp';
-					request(replaced);
-					
+					request('sakata@graphic.co.jp',addedBody);
 				}
 				
 			}
 			
 		}
-		*/
 
-	}
-	
-	/* =======================================================================
-	Get Replaced
-	========================================================================== */
-	private static function getReplaced(info:Array<String>,num:Int):Map<String,String> {
-		
-		
-		//body = StringTools.replace(body,'##1',corporate);
-		
-		//return ['mail'=>mail,'subject'=>message['subject'],'body'=>body,'staffFullname'=>staffFullname,'staffMail'=>staffMail];
-		return new Map();
-		
 	}
 	
 	/* =======================================================================
 	Request
 	========================================================================== */
-	private static function request(map:Map<String,String>):Void {
+	private static function request(to:String,body:String):Void {
 		
 		var http:Http = new Http('files/php/sendMail.php');
 		
-		http.onData = function(data:String):Void { trace(data); };
+		http.onData = function(data:String):Void {
+			onComplete(data == '1',to);
+		};
 		
-		http.setParameter('to',map['to']);
-		http.setParameter('body',map['body']);
+		http.setParameter('to',to);
+		http.setParameter('body',body);
 		
 		http.request(true);
+		
+	}
+	
+	/* =======================================================================
+	On Complete
+	========================================================================== */
+	private static function onComplete(isSuccess:Bool,mailaddress:String):Void {
+		
+		trace(mailaddress + ' : 送信' + (isSuccess ? '成功' : '失敗') + '！');
 		
 	}
 	

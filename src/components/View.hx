@@ -11,6 +11,9 @@ class View {
 	private static var _jFilename  :JQuery;
 	private static var _jForm      :JQuery;
 	private static var _jTestmail  :JQuery;
+	private static var _jNote      :JQuery;
+	private static var _jNum       :JQuery;
+	private static var _jError     :JQuery;
 	private static var _dragAndDrop:DragAndDrop;
 	
 	/* =======================================================================
@@ -23,6 +26,9 @@ class View {
 		_jFilename = jAll.find('#filename');
 		_jForm     = jAll.find('#form');
 		_jTestmail = _jForm.find('#testmail');
+		_jNote     = jAll.find('#note');
+		_jNum      = _jNote.find('.num');
+		_jError    = _jNote.find('.error');
 		
 		_jForm.find('#sendMail').on('click',sendMail);
 		
@@ -30,13 +36,31 @@ class View {
 		
 	}
 	
+		/* =======================================================================
+		Public - Set Num
+		========================================================================== */
+		public static function setNum(success:Int,total:Int):Void {
+			
+			_jNum.html('正常：' + success + ' / ' + total);
+			
+		}
+	
+		/* =======================================================================
+		Public - Add Error
+		========================================================================== */
+		public static function addError(name:String,mailaddress:String):Void {
+
+			_jError.append('<p>' + name + '（' + mailaddress + '）' + '</p>');
+
+		}
+	
 	/* =======================================================================
 	On Dropped
 	========================================================================== */
 	private static function onDropped(data:String):Void {
 		
 		_jFilename.text(_dragAndDrop.getFilename());
-		_jForm.show();
+		_jForm.add(_jNote).show();
 		
 		Data.init(data.split('\n'));
 		
@@ -47,39 +71,29 @@ class View {
 	========================================================================== */
 	private static function sendMail(event:JqEvent):Void {
 		
-		if (Data.getFormated().length == 0) {
-			
-			Handy.alert('リストに誤りがあります。メール送信できません。');
-			return;
-			
+		var errorLength:Int = Data.getErrorLength();
+		
+		if (errorLength > 0) {
+			Handy.alert('メールアドレスに誤りが見つかりました（' + errorLength + '件）。');
 		}
 		
 		var testmail:String = _jTestmail.prop('value');
 		
-		if (Dom.window.confirm('メールを送信します。\nよろしいですか？')) {
+		Handy.confirm('メールを送信します。\nよろしいですか？',function():Void {
 			
 			if (testmail.length > 0) {
 				
-				execute(testmail);
-				
+				Mailer.send(testmail);
+			
 			} else {
 				
-				if (Dom.window.confirm('本番配信を行います。')) {
-					execute();
-				}
+				Handy.confirm('本番配信を行います。',function():Void {
+					Mailer.send();
+				});
 				
 			}
 			
-		}
-		
-	}
-	
-	/* =======================================================================
-	Execute
-	========================================================================== */
-	private static function execute(testmail:String = null):Void {
-		
-		Mailer.send(testmail);
+		});
 		
 	}
 	

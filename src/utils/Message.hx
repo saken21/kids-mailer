@@ -1,7 +1,5 @@
 package utils;
 
-import js.JQuery;
-import jp.saken.utils.Dom;
 import jp.saken.utils.Ajax;
 
 class Message {

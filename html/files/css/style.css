@@ -3,12 +3,57 @@
 @import "common/layout.css";
 
 /*-------------------------------------------------------------------------
+	Header
+/*-----------------------------------------------------------------------*/
+#header {
+}
+
+	#header h1 {
+		display:inline-block;
+		margin-bottom:30px;
+		padding-bottom:5px;
+		border-bottom:1px solid #333;
+		font-size:24px;
+	}
+
+/*-------------------------------------------------------------------------
 	Form
 /*-----------------------------------------------------------------------*/
 #form {
 	display:none;
+	margin-bottom:50px;
 }
 	
 	#form p {
-		margin-bottom:20px;
+		margin-bottom:30px;
 	}
+	
+		#form p span {
+			display:block;
+			font-size:12px;
+		}
+	
+/*-------------------------------------------------------------------------
+	Note
+/*-----------------------------------------------------------------------*/
+#note {
+	display:none;
+	padding:20px;
+	background:#eee;
+}
+
+	#note .num {
+		margin-bottom:20px;
+		font-size:18px;
+		font-weight:bold;
+	}
+	
+	#note .error {
+	}
+	
+		#note .error h2 {
+			display:inline-block;
+			margin-bottom:10px;
+			padding:5px 10px;
+			border:1px solid #333;
+		}

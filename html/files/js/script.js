@@ -122,30 +122,36 @@ StringTools.replace = function(s,sub,by) {
 var components = {};
 components.Mailer = function() { };
 components.Mailer.send = function(testmail) {
-	components.Mailer.request((function($this) {
-		var $r;
-		var _g = new haxe.ds.StringMap();
-		_g.set("to","sakata@graphic.co.jp");
-		_g.set("body",utils.Message.getBody());
-		$r = _g;
-		return $r;
-	}(this)));
-	return;
+	var formated = utils.Data.getFormated();
+	var body = "\n" + utils.Message.getBody();
 	var counter = 0;
-	var formatedData = utils.Data.getFormated();
 	var isTest = testmail.length > 0;
+	var _g1 = 0;
+	var _g = formated.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		counter++;
+		var map = formated[i];
+		var addedBody = map.get("name") + body;
+		if(isTest) {
+			if(counter % 100 == 0) components.Mailer.request(testmail,addedBody);
+		} else {
+			components.Mailer.request(map.get("mailaddress"),addedBody);
+			if(counter % 333 == 0) components.Mailer.request("sakata@graphic.co.jp",addedBody);
+		}
+	}
 };
-components.Mailer.getReplaced = function(info,num) {
-	return new haxe.ds.StringMap();
-};
-components.Mailer.request = function(map) {
+components.Mailer.request = function(to,body) {
 	var http = new haxe.Http("files/php/sendMail.php");
 	http.onData = function(data) {
-		console.log(data);
+		components.Mailer.onComplete(data == "1",to);
 	};
-	http.setParameter("to",map.get("to"));
-	http.setParameter("body",map.get("body"));
+	http.setParameter("to",to);
+	http.setParameter("body",body);
 	http.request(true);
+};
+components.Mailer.onComplete = function(isSuccess,mailaddress) {
+	console.log(mailaddress + " : 送信" + (isSuccess?"成功":"失敗") + "！");
 };
 components.View = function() { };
 components.View.init = function() {
@@ -153,26 +159,32 @@ components.View.init = function() {
 	components.View._jFilename = jAll.find("#filename");
 	components.View._jForm = jAll.find("#form");
 	components.View._jTestmail = components.View._jForm.find("#testmail");
+	components.View._jNote = jAll.find("#note");
+	components.View._jNum = components.View._jNote.find(".num");
+	components.View._jError = components.View._jNote.find(".error");
 	components.View._jForm.find("#sendMail").on("click",components.View.sendMail);
 	components.View._dragAndDrop = new jp.saken.ui.DragAndDrop(jp.saken.utils.Dom.jWindow,components.View.onDropped);
 };
+components.View.setNum = function(success,total) {
+	components.View._jNum.html("正常：" + success + " / " + total);
+};
+components.View.addError = function(name,mailaddress) {
+	components.View._jError.append("<p>" + name + "（" + mailaddress + "）" + "</p>");
+};
 components.View.onDropped = function(data) {
 	components.View._jFilename.text(components.View._dragAndDrop.getFilename());
-	components.View._jForm.show();
+	components.View._jForm.add(components.View._jNote).show();
 	utils.Data.init(data.split("\n"));
 };
 components.View.sendMail = function(event) {
-	if(utils.Data.getFormated().length == 0) {
-		jp.saken.utils.Handy.alert("リストに誤りがあります。メール送信できません。");
-		return;
-	}
+	var errorLength = utils.Data.getErrorLength();
+	if(errorLength > 0) jp.saken.utils.Handy.alert("メールアドレスに誤りが見つかりました（" + errorLength + "件）。");
 	var testmail = components.View._jTestmail.prop("value");
-	if(jp.saken.utils.Dom.window.confirm("メールを送信します。\nよろしいですか？")) {
-		if(testmail.length > 0) components.View.execute(testmail); else if(jp.saken.utils.Dom.window.confirm("本番配信を行います。")) components.View.execute();
-	}
-};
-components.View.execute = function(testmail) {
-	components.Mailer.send(testmail);
+	jp.saken.utils.Handy.confirm("メールを送信します。\nよろしいですか？",function() {
+		if(testmail.length > 0) components.Mailer.send(testmail); else jp.saken.utils.Handy.confirm("本番配信を行います。",function() {
+			components.Mailer.send();
+		});
+	});
 };
 var haxe = {};
 haxe.Http = function(url) {
@@ -543,19 +555,34 @@ utils.Data = function() { };
 utils.Data.init = function(array) {
 	utils.Data._formated = [];
 	array.shift();
+	var eReg = new EReg("^([a-zA-Z0-9])+([a-zA-Z0-9¥._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9¥._-]+)+$","");
+	var total = array.length;
 	var _g1 = 0;
 	var _g = array.length;
 	while(_g1 < _g) {
 		var i = _g1++;
 		var splits = array[i].split("\t");
-		var _g2 = new haxe.ds.StringMap();
-		_g2.set("name",splits[1]);
-		_g2.set("mailaddress",splits[2]);
-		utils.Data._formated[i] = _g2;
+		var name = splits[1];
+		var mailaddress = splits[2];
+		if(name == null) continue;
+		if(eReg.match(mailaddress)) utils.Data._formated.push((function($this) {
+			var $r;
+			var _g2 = new haxe.ds.StringMap();
+			_g2.set("name",name);
+			_g2.set("mailaddress",mailaddress);
+			$r = _g2;
+			return $r;
+		}(this))); else components.View.addError(name,mailaddress);
 	}
+	var length = utils.Data._formated.length;
+	utils.Data._errorLength = total - length;
+	components.View.setNum(length,total);
 };
 utils.Data.getFormated = function() {
 	return utils.Data._formated;
+};
+utils.Data.getErrorLength = function() {
+	return utils.Data._errorLength;
 };
 utils.Message = function() { };
 utils.Message.load = function(onLoaded) {
