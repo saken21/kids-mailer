@@ -565,7 +565,7 @@ utils.Data.init = function(array) {
 		var name = splits[1];
 		var mailaddress = splits[2];
 		if(name == null) continue;
-		if(eReg.match(mailaddress)) utils.Data._formated.push((function($this) {
+		if(eReg.match(mailaddress) && name.indexOf("〓") < 0) utils.Data._formated.push((function($this) {
 			var $r;
 			var _g2 = new haxe.ds.StringMap();
 			_g2.set("name",name);

@@ -29,7 +29,7 @@ class Data {
 			
 			if (name == null) continue;
 			
-			if (eReg.match(mailaddress)) {
+			if (eReg.match(mailaddress) && name.indexOf('〓') < 0) {
 				_formated.push(['name'=>name,'mailaddress'=>mailaddress]);
 			} else {
 				View.addError(name,mailaddress);
