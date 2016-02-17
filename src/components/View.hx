@@ -62,6 +62,8 @@ class View {
 		_jFilename.text(_dragAndDrop.getFilename());
 		_jForm.add(_jNote).show();
 		
+		_jError.empty();
+		
 		Data.init(data.split('\n'));
 		
 	}

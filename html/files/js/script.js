@@ -172,6 +172,7 @@ components.View.addError = function(name,mailaddress) {
 components.View.onDropped = function(data) {
 	components.View._jFilename.text(components.View._dragAndDrop.getFilename());
 	components.View._jForm.add(components.View._jNote).show();
+	components.View._jError.empty();
 	utils.Data.init(data.split("\n"));
 };
 components.View.sendMail = function(event) {
