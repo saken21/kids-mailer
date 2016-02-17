@@ -135,10 +135,8 @@ components.Mailer.send = function(testmail) {
 		var addedBody = map.get("name") + body;
 		if(isTest) {
 			if(counter % 100 == 0) components.Mailer.request(testmail,addedBody);
-		} else {
-			components.Mailer.request(map.get("mailaddress"),addedBody);
-			if(counter % 333 == 0) components.Mailer.request("sakata@graphic.co.jp",addedBody);
-		}
+		} else components.Mailer.request(map.get("mailaddress"),addedBody);
+		if(counter % 333 == 0) components.Mailer.request("sakata@graphic.co.jp",addedBody);
 	}
 };
 components.Mailer.request = function(to,body) {

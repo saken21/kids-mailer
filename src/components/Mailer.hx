@@ -34,11 +34,11 @@ class Mailer {
 			} else {
 				
 				request(map['mailaddress'],addedBody);
-
-				if (counter % 333 == 0) {
-					request('sakata@graphic.co.jp',addedBody);
-				}
 				
+			}
+			
+			if (counter % 333 == 0) {
+				request('sakata@graphic.co.jp',addedBody);
 			}
 			
 		}
