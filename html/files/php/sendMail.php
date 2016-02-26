@@ -9,8 +9,8 @@
 	
 	$files = array(
 		
-		'企画概要.pdf'    => $attachmentFolder.'outline.pdf',
-		'アンケート用紙.pdf' => $attachmentFolder.'questionnaire.pdf'
+		'gwop_kikaku.pdf' => $attachmentFolder.'gwop_kikaku.pdf',
+		'gwop_anke.pdf'   => $attachmentFolder.'gwop_anke.pdf'
 		
 	);
 	
