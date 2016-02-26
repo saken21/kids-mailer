@@ -10,7 +10,7 @@
 	$files = array(
 		
 		'企画概要.pdf'    => $attachmentFolder.'outline.pdf',
-		'アンケート用紙.doc' => $attachmentFolder.'questionnaire.doc'
+		'アンケート用紙.pdf' => $attachmentFolder.'questionnaire.pdf'
 		
 	);
 	
