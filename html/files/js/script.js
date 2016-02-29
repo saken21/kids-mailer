@@ -125,7 +125,7 @@ components.Mailer.send = function(testmail) {
 	var formated = utils.Data.getFormated();
 	var body = "\n" + utils.Message.getBody();
 	var counter = 0;
-	var isTest = testmail.length > 0;
+	var isTest = testmail != null;
 	var _g1 = 0;
 	var _g = formated.length;
 	while(_g1 < _g) {

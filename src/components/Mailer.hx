@@ -16,7 +16,7 @@ class Mailer {
 		
 		var body   :String = '\n' + Message.getBody();
 		var counter:Int    = 0;
-		var isTest :Bool   = testmail.length > 0;
+		var isTest :Bool   = testmail != null;
 		
 		for (i in 0...formated.length) {
 			
